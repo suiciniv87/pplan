@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
-import CircularJSON from 'circular-json'
+// import CircularJSON from 'circular-json'
 
 mongoose.connect('mongodb://192.168.0.40/local', {useNewUrlParser: true, useUnifiedTopology: true});
 const peopleSchema = new mongoose.Schema({
@@ -47,7 +47,7 @@ app.get('/clientes', async (req, res) => {
 })
 
 app.get('/clientes/:id', async (req, res) => {
-    await people.findById(req.headers.id, function(err, cliente) {
+    await people.findById(req.params.id, function(err, cliente) {
         if (!err) {
             res.status(200).send(cliente)
         }
@@ -57,8 +57,20 @@ app.get('/clientes/:id', async (req, res) => {
     })
 })
 
+app.put('/clientes/:id', async (req, res) => {
+    const dados = req.body
+    console.log(dados)
+    // await people.findOneAndUpdate(req.params.id, {$set:req.body }, function(err, cliente) {
+    //     if (!err) {
+    //         res.status(200).send(cliente)
+    //     }
+    //     else {
+    //         res.send(err)
+    //     }
+    // })
+})
+
 app.delete('/clientes/:id', async(req, res) => {
-    console.log(req.headers.id)
     await people.deleteOne({ "_id": req.headers.id }, function(err, cliente) {
         if (!err) {
             res.status(200).send("Cliente excluído")

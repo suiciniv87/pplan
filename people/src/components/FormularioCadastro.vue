@@ -60,7 +60,7 @@
                 v-model="endereco"
                 :error-messages="errors"
                 value="1"
-                label="Informar Endereço?"
+                label="Mostrar Endereço?"
                 type="checkbox"
               ></v-checkbox>
             </validation-provider>
@@ -188,7 +188,7 @@
     watch: {
       estado() {
         this.buscarCidades()
-      }
+      },
     },
     methods: {
       submit () {
@@ -241,9 +241,7 @@
       },
       async cadastrarCliente() {
         this.clientes = []
-        // this.cadastro += 1
         this.clientes.push({
-            // 'id': this.cadastro ,
             cliente: {
               'nome': this.nome,
               'celular': this.numeroTelefone,

@@ -84,8 +84,8 @@ export default {
       cadastrar() {
           this.$router.push('cadastro')
       },
-      editItem() {
-          console.log('editar')
+      editItem(item) {
+          EventBus.$emit('edit', item.id)
       },
       visualizarItem(item) {
           EventBus.$emit('evento', item)

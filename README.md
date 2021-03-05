@@ -22,3 +22,7 @@ npm run serve
 ***PS: Foi utilizado para preencher os inputs de estado e cidade, a API v1 do IBGE, contudo constatei
 alguns bugs. Como foi para um projeto específico, utilizei ela. Próxima mudança será utilizar a API do
 VIACEP consultada diretamente do backend.
+
+***PS2: Motivo pelo qual ter sido escolhido VueJS: É o framework javascript melhor posicionado atualmente
+como mostram alguns sites: https://bestofjs.org/, https://blog.geekhunter.com.br/react-vs-vue-vs-angular-qual-escolher/, 
+entre outros
