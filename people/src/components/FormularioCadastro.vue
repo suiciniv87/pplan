@@ -276,7 +276,7 @@
       }
     },
     created() {
-      // this.buscarEstados()
+      this.buscarEstados()
     }
   }
 </script>

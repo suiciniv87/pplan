@@ -1,9 +1,12 @@
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
-// import CircularJSON from 'circular-json'
 
-mongoose.connect('mongodb://192.168.0.40/local', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://192.168.0.40/local', {
+    useNewUrlParser: true, 
+    useUnifiedTopology: true,
+    useFindAndModify: false
+});
 const peopleSchema = new mongoose.Schema({
     cliente: {
         'nome': String,
@@ -36,9 +39,9 @@ app.post('/clientes', async (req, res) => {
     return res.status(200).send(JSON.stringify(dados))
 })
 app.get('/clientes', async (req, res) => {
-    await people.find({}, function(err, docs) {
+    await people.find({}, function(err, clientes) {
         if(!err) {
-            return res.status(200).send(docs)
+            return res.status(200).send(clientes)
         }
         else {
             res.send(err)
@@ -58,16 +61,16 @@ app.get('/clientes/:id', async (req, res) => {
 })
 
 app.put('/clientes/:id', async (req, res) => {
+    const id = req.params.id
     const dados = req.body
-    console.log(dados)
-    // await people.findOneAndUpdate(req.params.id, {$set:req.body }, function(err, cliente) {
-    //     if (!err) {
-    //         res.status(200).send(cliente)
-    //     }
-    //     else {
-    //         res.send(err)
-    //     }
-    // })
+    await people.findOneAndUpdate({ "_id": id }, {$set:dados }, function(err, clienteAtualizado) {
+        if (!err) {
+            res.status(200).send(clienteAtualizado)
+        }
+        else {
+            res.send(err)
+        }
+    })
 })
 
 app.delete('/clientes/:id', async(req, res) => {

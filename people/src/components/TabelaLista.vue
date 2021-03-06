@@ -91,20 +91,31 @@ export default {
           EventBus.$emit('evento', item)
       },
       deleteItem(item) {
-          fetch(`http://localhost:3000/clientes/${item.id}`, {
+        const index = this.desserts.indexOf(item)
+        Swal.fire({
+          title: 'Tem certeza?',
+          text: "Se você remover este item, não será possível recuperá-lo. Deseja remover?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sim, remova!'
+        }).then((result) => {
+          if (result.value) {
+            fetch(`http://localhost:3000/clientes/${item.id}`, {
               headers: {
                 id: item.id
-              } ,
-              method: "DELETE"
-          })
-          .then( 
-              Swal.fire({
-              icon: 'success',
-              title: 'Excluído',
-              text: 'Cliente excluído com sucesso!',
+              },
+              method: 'DELETE'
             })
-          )
-          .then(this.popularTabela())
+            this.desserts.splice(index, 1)
+            Swal.fire(
+              'Deletado!',
+              'Produto deletado com sucesso!',
+              'success'
+            )
+          }
+        })
       },
       organizaTabela() {
           let tabela = []
@@ -135,6 +146,9 @@ export default {
   },
   created() {
     this.popularTabela()
+    EventBus.$on('carregar', () => {
+      this.popularTabela()
+    })
   }
 }
 </script>

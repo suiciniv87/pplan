@@ -156,7 +156,7 @@
   import EventBus from '../plugins/eventbus'
   import { required, digits, max } from 'vee-validate/dist/rules'
   import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
-//   import Swal from 'sweetalert2'
+  import Swal from 'sweetalert2'
 
   setInteractionMode('eager')
 
@@ -230,33 +230,67 @@
       },
       atualizarCliente() {
           let data = {
-                cliente: {
-                'nome': this.nome,
-                'celular': this.numeroTelefone,
-                'documento': this.documento
+                "cliente": {
+                "nome": this.nome,
+                "celular": this.numeroTelefone,
+                "documento": this.documento
                 },
-                endereco: {
-                    'cep': this.cep,
-                    'estado': this.estado,
-                    'cidade': this.cidade,
-                    'rua': this.rua,
-                    'complemento': this.complemento,
+                "endereco": {
+                    "cep": this.cep,
+                    "estado": this.estado,
+                    "cidade": this.cidade,
+                    "rua": this.rua,
+                    "complemento": this.complemento,
                 },
-                produtos: {
-                    'produtos': this.produtos
+                "produtos": {
+                    "produtos": this.produtos
                 }
             }
           fetch(`http://localhost:3000/clientes/${this.id}`, {
               method: "PUT",
+              headers: {
+                "Content-Type": "application/json"
+              },
               body: JSON.stringify(data)
           })
-          .then(r => r.json())
-          .then(r => {
-              console.log(r)
+          .then(() => {
               this.clear()
               this.dialog = false
+              EventBus.$emit('carregar')
           })
         },
+        async buscarEstados() {
+        await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+        .then(r => r.json())
+        .then(r => {
+          for (let e in r) {
+            this.itemsEstado.push(r[e].sigla)
+          }
+        })
+        .catch(() => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Houve alguma falha ao tentar adicionar as UF dos estados, por favor, atualize a página e tente novamente.',
+          })
+        })
+      },
+      async buscarCidades() {
+        await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${this.estado}/municipios`)
+        .then(r => r.json())
+        .then(r => {
+          for (let c in r) {
+            this.itemsCidade.push(r[c].nome)
+          }
+        })
+        .catch(() => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Falha ao tentar adicionar as cidades automaticamente, verifique se o problema persiste com outros estados, ou atualize a página e tente novamente.',
+          })
+        })
+      },
         pegarDados(evento) {
           fetch(`http://localhost:3000/clientes/${evento}`, {
               method: "GET",
@@ -278,6 +312,7 @@
       },
     },
     created() {
+        this.buscarEstados()
         EventBus.$on(EventBus.$on('edit', evento => {
             this.id = evento
             this.dialog = true
